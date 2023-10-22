@@ -2,6 +2,8 @@ from pyo import*
 
 class Synth:
 
+    audioServer = Server() # the audio server this synth will use
+
     allNoteFreqs = {} # once initialized, this holds note names as keys and their freqeuncies as values.
     # Each entry will look like these examples: {"A4" : 440}, {"D#5" : 622.25},  {"Eb5" : 622.25}
     # NOTE: Enharmonically equivalent notes are given seperate entries with identical values
@@ -16,7 +18,7 @@ class Synth:
     majorPent = [2,2,3,2,3]
 
     def __init__(self, noteFreqFile = "NoteFreqsCleaned.txt", noteNameFile = "NoteNames.txt"):
-        """ Sets up the class allNoteFreqs dictionary and the allNoteNames list
+        """ Sets up the class allNoteFreqs dictionary and the allNoteNames list, and boots the audio server
         """
         with open(noteFreqFile,'r') as f:
             for line in f:
@@ -26,7 +28,23 @@ class Synth:
         with open(noteNameFile,'r') as f:
             for line in f:
                 self.allNoteNames.append(line.strip())
-            
+        
+        self.audioServer.boot()
+
+
+
+    def playTune(self,chords,bpm):
+        self.audioServer.start()
+        for chord in chords:
+            self.playNotes(chord, 60/bpm)
+        self.audioServer.stop()
+
+    
+    def playNotes(self,noteFreqs, duration):
+        chord = SuperSaw(noteFreqs).out()
+        time.sleep(duration)
+
+
     def getNotesForKey(self, lowestTonic, numOctaves, scaleSteps):
         """ 
         Generates a list of all notes in a particular key given a particular tonic and number of octaves
@@ -82,7 +100,32 @@ class Synth:
         """ Returns internal dictionary between note names and their equal tempered frequency"""
         return self.allNoteFreqs
     
+    def stopAudioLoop(self):
+        self.audioServer.stop()
 
 if __name__ == "__main__":
     synth = Synth()
-    print(synth.getFreqsForKey(synth.getNotesForKey("A4",1,synth.minorPent)))
+    amPent = synth.getFreqsForKey(synth.getNotesForKey("A4",2,synth.minorPent))
+
+
+    exampleTune = [[amPent[i] for i in [0,1,3]],
+                   [amPent[i] for i in [1,3,4]],
+                   [amPent[i] for i in [2,5,7]],
+                   [amPent[i] for i in [3,4,8]],
+                   [amPent[i] for i in [0,1,3]]]
+    
+    synth.playTune(exampleTune,60)
+
+
+    # notes = [440, 659.25]
+
+    # while notes[-1] < 1000:
+    #     chord = SuperSaw(notes).out()
+    #     newNotes = []
+    #     for n in notes:
+    #         newNotes.append(1.05946*n)
+    #     notes = newNotes
+    #     time.sleep(1)
+
+    # 
+
