@@ -2,6 +2,7 @@
 
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
+import RuleSet
 
 class MusicGeneratorGUI:
     #set up and manage all variables and GUI elements
@@ -14,7 +15,10 @@ class MusicGeneratorGUI:
         self.numCols = xDimension
         self.blockBPM = 0.0
         
-        
+        self.rsg = RuleSet.RuleSetGenerator(self.numCols)
+        self.stepsTaken = 0
+        self.allGenerations = [[]]
+
         # Set up the GUI
         self.setupWidgets()
         
@@ -26,8 +30,8 @@ class MusicGeneratorGUI:
         """Sets up the edit tools frame and its parts, including buttons for clearing the grid, changing
         its numRows/numCols, BPM, and key"""
         self.editEnabled = True
-        editFrame = tk.Frame(self.root, bd=5, padx=5, pady=5, relief=tk.GROOVE)
-        editFrame.grid(row=3, column=1, rowspan=2, padx=5, pady=5, sticky=tk.N)
+        editFrame = tk.Frame(self.root, bd=7, padx=5, pady=5, relief=tk.GROOVE)
+        editFrame.grid(row=3, column=1, rowspan=7, padx=5, pady=5, sticky=tk.N)
         editTitle = tk.Label(editFrame, text="Edit Generator Options", font="Arial 16 bold", anchor=tk.CENTER)
         editTitle.grid(row=0, column=1, padx=5, pady=5)
 
@@ -39,15 +43,19 @@ class MusicGeneratorGUI:
         BPMLabel = tk.Label(makerFrame, text="BPM")
         rowLabel = tk.Label(makerFrame, text="# of Rows")
         colLabel = tk.Label(makerFrame, text="# of Cols")
+        seedLabel = tk.Label(makerFrame, text="input seed")
         self.userBPM = tk.StringVar()
         self.userRows = tk.StringVar()
         self.userCols = tk.StringVar()
+        self.userSeed = tk.StringVar()
         self.userBPM.set(str(60))
         self.userRows.set(str(self.numRows))
         self.userCols.set(str(self.numCols))
+        self.userSeed.set(str(0))
         self.BPMEntry = tk.Entry(makerFrame, textvariable=self.userBPM, width=4, justify=tk.CENTER)
         self.rowsEntry = tk.Entry(makerFrame, textvariable=self.userRows, width=4, justify=tk.CENTER)
         self.colsEntry = tk.Entry(makerFrame, textvariable=self.userCols, width=4, justify=tk.CENTER)
+        self.seedEntry = tk.Entry(makerFrame, textvariable=self.userSeed, width=16, justify=tk.CENTER)
 
         
 
@@ -56,9 +64,11 @@ class MusicGeneratorGUI:
         BPMLabel.grid(row=1, column=1)
         rowLabel.grid(row=1, column=3)
         colLabel.grid(row=2, column=3)
+        seedLabel.grid(row=3, column=1)
         self.BPMEntry.grid(row=2, column=1)
         self.rowsEntry.grid(row=1, column=4)
         self.colsEntry.grid(row=2, column=4)
+        self.seedEntry.grid(row=3, column=2)
 
         # Edit existing maze subframe
         editSubFrame = tk.Frame(editFrame, bd=2, relief=tk.GROOVE, padx=5, pady=5)
@@ -171,7 +181,17 @@ class MusicGeneratorGUI:
         x2 = x1 + (self.cellSize - 2)
         y2 = y1 + (self.cellSize - 2)
         return x1, y1, x2, y2
-        
+
+    def getSeed(self):
+        """Converts the current string seed into a list of ints and returns it"""
+        currentSeed = []
+        print(self.userSeed.get())
+        for character in str(self.userSeed.get()):
+            currentSeed.append(int(character))
+        while (len(currentSeed) < int(self.numCols)):
+            currentSeed.append(0)
+        return currentSeed
+
     def goProgram(self):
         """This starts the whole GUI going"""
         self.root.mainloop()
@@ -182,10 +202,23 @@ class MusicGeneratorGUI:
     #TODO implement step
     def step(self):
         print("stepped")
+        if(self.stepsTaken < (int(self.numRows) -1)):
+            if(self.stepsTaken == 0):
+                currentString = self.getSeed()
+                self.allGenerations.append(currentString)
+            else:
+                currentString = self.allGenerations[self.stepsTaken]
+            print(currentString)
+            self.stepsTaken+=1
+            self.allGenerations.append(self.rsg.step(currentString))
+            print(self.allGenerations[self.stepsTaken])
+
       
     #TODO implement run  
     def run(self):
         print("ran")
+        while(self.stepsTaken < (int(self.numRows) -1)):
+            self.step()
         
 
 def RunMusicGenerator(xDimension=75, yDimension = 50):
