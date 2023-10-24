@@ -3,7 +3,7 @@
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import RuleSet
-# from Synth import Synth
+from Synth import Synth
 
 
 class MusicGeneratorGUI:
@@ -19,12 +19,14 @@ class MusicGeneratorGUI:
 
         # declarations for external calls
         self.rsg = RuleSet.RuleSetGenerator(self.numCols)
-        # self.synth = Synth()
         self.stepsTaken = 0
         self.allGenerations = [[]]
 
         # Set up the GUI
         self.setupWidgets()
+        
+        # Set up synth
+        self.synth = Synth()
         
     def setupWidgets(self):
         self._initGrid()
@@ -49,6 +51,7 @@ class MusicGeneratorGUI:
         colLabel = tk.Label(makerFrame, text="# of Cols")
         seedLabel = tk.Label(makerFrame, text="input seed")
         self.userBPM = tk.StringVar()
+        self.userKey = tk.StringVar()
         self.userRows = tk.StringVar()
         self.userCols = tk.StringVar()
         self.userSeed = tk.StringVar()
@@ -80,6 +83,11 @@ class MusicGeneratorGUI:
 
         editSubTitle = tk.Label(editSubFrame, text="Choose key", font="Arial 14 bold", anchor=tk.CENTER)
         editSubTitle.grid(row=0, column=1)  # , columnspan=2)
+        
+        self.keyEntry = tk.Entry(editSubFrame, textvariable=self.userKey, width=4, justify=tk.CENTER)
+        self.keyEntry.grid(row=1, column=1)
+        
+        
         # Variables related to action settings
         self.editChoice = tk.StringVar()
         self.editChoice.set("start")
@@ -111,6 +119,8 @@ class MusicGeneratorGUI:
         self.runButton = tk.Button(stepFrame, text="Run", command=self.run)
         self.stepButton.grid(row=1, column=1, pady=5)
         self.runButton.grid(row=2, column=1, pady=5)
+        self.playButton = tk.Button(stepFrame, text="play", command=self.playMusic)
+        self.playButton.grid(row=3, column=1, pady=5)
 
 
     def _initGrid(self):
@@ -192,7 +202,7 @@ class MusicGeneratorGUI:
         print(self.userSeed.get())
         for character in str(self.userSeed.get()):
             currentSeed.append(int(character))
-        while (len(currentSeed) < int(self.numCols)):
+        while (len(currentSeed) < self.numCols - 1):
             currentSeed.append(0)
         return currentSeed
 
@@ -216,7 +226,7 @@ class MusicGeneratorGUI:
         if(self.stepsTaken < (int(self.numRows) -1)):
             if(self.stepsTaken == 0):
                 currentString = self.getSeed()
-                self.allGenerations.append(currentString)
+                self.allGenerations[0] = (currentString)
                 self.updateGrid()
             else:
                 currentString = self.allGenerations[self.stepsTaken]
@@ -230,6 +240,33 @@ class MusicGeneratorGUI:
         print("ran")
         while(self.stepsTaken < (int(self.numRows) -1)):
             self.step()
+          
+    def getKey(self):
+        return self.userKey.get()
+      
+    def playMusic(self):
+        key = self.getKey()
+        
+        scaleSteps = []
+        if "m" in key:
+            scaleSteps = self.synth.minorPent
+        else:
+            scaleSteps = self.synth.majorPent
+        
+        keyName = key[0]+"1"
+        
+        numOcts = 5 # hardcoded for now
+        
+        scale = self.synth.getNotesForKey(keyName,numOcts,scaleSteps)
+        
+        tune = self.synth.interpretData1(self.allGenerations, scale)
+        
+        print(tune)
+        # scaleFreqs = self.synth.getFreqsForKey(scale)
+
+        
+        
+        self.synth.playTune(tune)
         
 
 def RunMusicGenerator(xDimension=75, yDimension = 50):

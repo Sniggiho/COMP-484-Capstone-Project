@@ -48,23 +48,25 @@ class Synth:
         """
         dataWidth = len(automataData[0])
         scaleWidth = len(scale)
+        print(dataWidth)
+        print(scaleWidth)
 
         assert(dataWidth >= scaleWidth), "Scale too large for data; please try again with smaller scale size"
         assert(dataWidth % scaleWidth == 0), "dataWidth must be evenly divisible by scaleWidth"
 
         noteWidth = dataWidth/scaleWidth # How many adjacent automata cells should be mapped to the activation of a single note
 
-        progression = [[]]
+        progression = [[]]*len(automataData)
 
         for chordData in range(len(automataData)):
-            for i in range(0,dataWidth,noteWidth):
+            for i in range(0,int(dataWidth),int(noteWidth)):
                 # for each note, this checks if the majority of its cells are ativated. If so, it plays the note.
                 noteSum = 0
-                for j in range(noteWidth): 
+                for j in range(int(noteWidth)): 
                     if automataData[chordData][i+j]:
                         noteSum += 1
                 if noteSum >= noteWidth/2.0:
-                    progression[chordData].append(scale[i/noteWidth]) # add this note to the current chord
+                    progression[chordData].append(scale[i/int(noteWidth)]) # add this note to the current chord
 
         return progression
 

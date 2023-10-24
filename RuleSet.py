@@ -17,7 +17,7 @@ class RuleSetGenerator:
                 newString[x] = 0
             # 1,0,0 = 1
             elif(currentString[x-1] == 1) and (currentString[x] == 0) and (currentString[x+1] == 0):
-                newString[x] = 0
+                newString[x] = 1
             # 0,1,0 = 1
             elif (currentString[x - 1] == 0) and (currentString[x] == 1) and (currentString[x + 1] == 0):
                 newString[x] = 1
