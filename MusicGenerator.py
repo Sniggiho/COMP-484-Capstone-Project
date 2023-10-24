@@ -3,6 +3,8 @@
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import RuleSet
+# from Synth import Synth
+
 
 class MusicGeneratorGUI:
     #set up and manage all variables and GUI elements
@@ -14,8 +16,10 @@ class MusicGeneratorGUI:
         self.numRows = yDimension
         self.numCols = xDimension
         self.blockBPM = 0.0
-        
+
+        # declarations for external calls
         self.rsg = RuleSet.RuleSetGenerator(self.numCols)
+        # self.synth = Synth()
         self.stepsTaken = 0
         self.allGenerations = [[]]
 
@@ -192,29 +196,36 @@ class MusicGeneratorGUI:
             currentSeed.append(0)
         return currentSeed
 
+    def updateGrid(self):
+        count = 0
+        for cell in self.allGenerations[self.stepsTaken]:
+            if(cell == 1) and (count < 75):
+                self._setCellColor(self._posToId(self.stepsTaken, count), "red2")
+            count+=1
+
+
+
     def goProgram(self):
         """This starts the whole GUI going"""
         self.root.mainloop()
 # -------------------------------------------------------------------------------------------------------------------------
     #below here are methods for communicating with the other classes and for stepping/running the code
-    
-    
-    #TODO implement step
+
     def step(self):
         print("stepped")
         if(self.stepsTaken < (int(self.numRows) -1)):
             if(self.stepsTaken == 0):
                 currentString = self.getSeed()
                 self.allGenerations.append(currentString)
+                self.updateGrid()
             else:
                 currentString = self.allGenerations[self.stepsTaken]
             print(currentString)
             self.stepsTaken+=1
             self.allGenerations.append(self.rsg.step(currentString))
             print(self.allGenerations[self.stepsTaken])
+            self.updateGrid()
 
-      
-    #TODO implement run  
     def run(self):
         print("ran")
         while(self.stepsTaken < (int(self.numRows) -1)):
