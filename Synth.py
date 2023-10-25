@@ -59,14 +59,17 @@ class Synth:
         progression = [[]]*len(automataData)
 
         for chordData in range(len(automataData)):
+            print("automata data row",chordData,"has length",len(automataData[chordData])) 
+
             for i in range(0,int(dataWidth),int(noteWidth)):
                 # for each note, this checks if the majority of its cells are ativated. If so, it plays the note.
                 noteSum = 0
-                for j in range(int(noteWidth)): 
+                for j in range(int(noteWidth)):
+                    # print(i+j)
                     if automataData[chordData][i+j]:
                         noteSum += 1
                 if noteSum >= noteWidth/2.0:
-                    progression[chordData].append(scale[i/int(noteWidth)]) # add this note to the current chord
+                    progression[chordData].append(scale[int(i/noteWidth)]) # add this note to the current chord
 
         return progression
 
@@ -75,6 +78,7 @@ class Synth:
         for chord in chords:
             self.playNotes(chord, 60/bpm)
         self.audioServer.stop()
+
 
     
     def playNotes(self,noteFreqs, duration):
