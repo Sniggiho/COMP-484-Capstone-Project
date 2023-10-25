@@ -202,7 +202,7 @@ class MusicGeneratorGUI:
         print(self.userSeed.get())
         for character in str(self.userSeed.get()):
             currentSeed.append(int(character))
-        while (len(currentSeed) < self.numCols - 1):
+        while (len(currentSeed) < self.numCols):
             currentSeed.append(0)
         return currentSeed
 
@@ -263,10 +263,10 @@ class MusicGeneratorGUI:
         
         print(tune)
         # scaleFreqs = self.synth.getFreqsForKey(scale)
-
         
         
-        self.synth.playTune(tune)
+        
+        self.synth.playTune(tune, int(self.userBPM.get()))
         
 
 def RunMusicGenerator(xDimension=75, yDimension = 50):
