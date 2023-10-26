@@ -266,7 +266,7 @@ class MusicGeneratorGUI:
         
         
         
-        self.synth.playTune(tune, int(self.userBPM.get()))
+        # self.synth.playTune(tune, int(self.userBPM.get()))
         
 
 def RunMusicGenerator(xDimension=75, yDimension = 50):

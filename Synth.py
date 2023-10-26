@@ -56,7 +56,7 @@ class Synth:
 
         noteWidth = dataWidth/scaleWidth # How many adjacent automata cells should be mapped to the activation of a single note
 
-        progression = [[]]*len(automataData)
+        progression = [[] for _ in range(len(automataData))]
 
         for chordData in range(len(automataData)):
             print("automata data row",chordData,"has length",len(automataData[chordData])) 
@@ -65,7 +65,6 @@ class Synth:
                 # for each note, this checks if the majority of its cells are ativated. If so, it plays the note.
                 noteSum = 0
                 for j in range(int(noteWidth)):
-                    # print(i+j)
                     if automataData[chordData][i+j]:
                         noteSum += 1
                 if noteSum >= noteWidth/2.0:
@@ -146,7 +145,7 @@ class Synth:
 
 if __name__ == "__main__":
     synth = Synth()
-    amPent = synth.getFreqsForKey(synth.getNotesForKey("A4",2,synth.minorPent))
+    amPent = synth.getFreqsForKey(synth.getNotesForKey("A2",2,synth.minorPent))
 
 
     exampleTune = [[amPent[i] for i in [0,1,3]],
