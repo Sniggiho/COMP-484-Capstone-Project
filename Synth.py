@@ -29,6 +29,9 @@ class Synth:
             for line in f:
                 self.allNoteNames.append(line.strip())
         
+
+        print(self.allNoteNames)
+        print(self.allNoteFreqs)
         self.audioServer.boot()
 
     def interpretData1(self, automataData, scale):
@@ -45,11 +48,11 @@ class Synth:
 
         Return:
         -------
+        progression : list of lists of strings
+            A list of lists containing the names of each note to be played in a given step
         """
         dataWidth = len(automataData[0])
         scaleWidth = len(scale)
-        print(dataWidth)
-        print(scaleWidth)
 
         assert(dataWidth >= scaleWidth), "Scale too large for data; please try again with smaller scale size"
         assert(dataWidth % scaleWidth == 0), "dataWidth must be evenly divisible by scaleWidth"
@@ -59,8 +62,6 @@ class Synth:
         progression = [[] for _ in range(len(automataData))]
 
         for chordData in range(len(automataData)):
-            print("automata data row",chordData,"has length",len(automataData[chordData])) 
-
             for i in range(0,int(dataWidth),int(noteWidth)):
                 # for each note, this checks if the majority of its cells are ativated. If so, it plays the note.
                 noteSum = 0
@@ -73,19 +74,39 @@ class Synth:
         return progression
 
     def playTune(self,chords,bpm):
+        """Given a list of list of note names, plays them in sequence as quarter notes at the given BPM
+        
+        Param:
+        ------
+        chords : list of lists of strings
+            The chords to be played and order to play them
+        bpm:
+            The tempo at which to play back the given tune
+        """
         self.audioServer.start()
         for chord in chords:
-            self.playNotes(chord, 60/bpm)
+            chordFreqs = self.getFreqs(chord)
+            self.playNotes(chordFreqs, 60/bpm)
         self.audioServer.stop()
 
 
-    
     def playNotes(self,noteFreqs, duration):
-        chord = SuperSaw(noteFreqs).out()
+        """ Sounds a given set of frequencies for the given duration
+
+        If passed an empty list, simply rests for duration
+
+        Param:
+        ------
+        noteFreqs : list of floats
+            List containing frequencies to be sounded
+        duration : float
+            How long to sound these frequencies
+        """
+        if noteFreqs: #if the list isn't empty
+            chord = SuperSaw(noteFreqs).out()
         time.sleep(duration)
 
-
-    def getNotesForKey(self, lowestTonic, numOctaves, scaleSteps):
+    def getScale(self, lowestTonic, numOctaves, scaleSteps):
         """ 
         Generates a list of all notes in a particular key given a particular tonic and number of octaves
         
@@ -106,7 +127,17 @@ class Synth:
         -------
             A list of Strings representing the notes in a given key
         """
-        startIdx = self.allNoteNames.index(lowestTonic.capitalize().strip())
+        lowestTonic = lowestTonic.capitalize().strip()
+
+        # increment start index until we find the correct starting spot for our scals
+        startIdx = -1
+        lookingForStartIdx = True
+        while lookingForStartIdx:
+            startIdx += 1
+            if lowestTonic in self.allNoteNames[startIdx]:
+                lookingForStartIdx = False
+
+
         currIdx = startIdx
         notesInKey = []
 
@@ -117,7 +148,7 @@ class Synth:
         
         return notesInKey
         
-    def getFreqsForKey(self, noteNames):
+    def getFreqs(self, noteNames):
         """ Given a list of note names, returns a list holding the frequncies for each note
 
         Param:
@@ -145,7 +176,7 @@ class Synth:
 
 if __name__ == "__main__":
     synth = Synth()
-    amPent = synth.getFreqsForKey(synth.getNotesForKey("A2",2,synth.minorPent))
+    amPent = synth.getFreqsForKey(synth.getScale("A2",2,synth.minorPent))
 
 
     exampleTune = [[amPent[i] for i in [0,1,3]],

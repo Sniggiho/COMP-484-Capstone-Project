@@ -250,23 +250,22 @@ class MusicGeneratorGUI:
         scaleSteps = []
         if "m" in key:
             scaleSteps = self.synth.minorPent
+            keyName = key[0:-1]+"1"
         else:
             scaleSteps = self.synth.majorPent
-        
-        keyName = key[0]+"1"
+            keyName = key + "1"
         
         numOcts = 5 # hardcoded for now
         
-        scale = self.synth.getNotesForKey(keyName,numOcts,scaleSteps)
+        scale = self.synth.getScale(keyName,numOcts,scaleSteps)
         
+        print(scale)
         tune = self.synth.interpretData1(self.allGenerations, scale)
         
         print(tune)
-        # scaleFreqs = self.synth.getFreqsForKey(scale)
+               
         
-        
-        
-        # self.synth.playTune(tune, int(self.userBPM.get()))
+        self.synth.playTune(tune, int(self.userBPM.get()))
         
 
 def RunMusicGenerator(xDimension=75, yDimension = 50):
