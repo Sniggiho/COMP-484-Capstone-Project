@@ -36,8 +36,7 @@ class RockstarGA:
 
     def generateCompleteTune(self, child):
         # uses the attatched ruleset to calculate the automata's generation on a give string
-        childsTune = [[]]
-        childsTune.append(child)
+        childsTune = [[], child]
         for x in range(self.tuneLength-1):
             nextString = self.rsg.step(child)
             childsTune.append(nextString)
@@ -51,6 +50,8 @@ class RockstarGA:
     def start(self):
         # begins the GA generation
         self.generateStartingChildren()
+        print(self.allGenerations)
+        # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
 def RunGA(children=20, totalGenerations=50, childrenLength =75, tuneLength=50):
