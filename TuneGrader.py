@@ -6,7 +6,6 @@ class TuneGrader:
         with open(self.triadFileName,'r') as f:
             for line in f:
                 self.triads.append(line.split())
-        print(self.triads)
 
     def determineDissonance(self, chord : list):
         """ Implements an incredibly simple measure of chordal dissonance. Each possible diatonic triad is considered, 

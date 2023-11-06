@@ -18,20 +18,20 @@ class RockstarGA:
         self.dsc = TuneGrader.TuneGrader()
 
         #datastructures
-        self.allGenerations = [[[]]]
-
+        self.allGenerations = []
 
 
     def generateStartingChildren(self):
         # randomly generates a random set of starting seeds of size equal to childrenLength
-        nextGeneration = [[]]
+        nextGeneration = []
         newChild = []
         for x in range(self.children):
             for y in range(self.childrenLength):
                 newChild.append(random.choice(range(2)))
-            nextGeneration.append(newChild)
+            nextGeneration.append(newChild.copy())
             # print(newChild)
             newChild.clear()
+        # print(nextGeneration)
         self.allGenerations.append(nextGeneration)
 
     def generateCompleteTune(self, child):
@@ -40,7 +40,7 @@ class RockstarGA:
         for x in range(self.tuneLength-1):
             nextString = self.rsg.step(child)
             childsTune.append(nextString)
-        print(childsTune)
+        # print(childsTune)
         return childsTune
 
     def determineChildDissonance(self, child):
