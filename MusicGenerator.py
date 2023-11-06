@@ -4,6 +4,7 @@ import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import RuleSet
 from Synth import Synth
+from TuneGrader import *
 
 
 class MusicGeneratorGUI:
@@ -27,6 +28,9 @@ class MusicGeneratorGUI:
         
         # Set up synth
         self.synth = Synth()
+
+        # TODO: just for testing purposes
+        self.tuneGrader =  TuneGrader()
         
     def setupWidgets(self):
         self._initGrid()
@@ -263,6 +267,7 @@ class MusicGeneratorGUI:
         tune = self.synth.interpretData1(self.allGenerations, scale)
         
         print(tune)
+        print("dissonance =", self.tuneGrader.determineTotalDissonance(tune))
                
         
         self.synth.playTune(tune, int(self.userBPM.get()))

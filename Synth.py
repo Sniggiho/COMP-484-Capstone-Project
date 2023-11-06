@@ -176,7 +176,7 @@ class Synth:
 
 if __name__ == "__main__":
     synth = Synth()
-    amPent = synth.getFreqsForKey(synth.getScale("A2",2,synth.minorPent))
+    amPent = synth.getScale("A3",3, synth.minorPent)
 
 
     exampleTune = [[amPent[i] for i in [0,1,3]],

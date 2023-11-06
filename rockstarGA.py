@@ -1,5 +1,5 @@
 import RuleSet
-import DissonanceCalculator
+import TuneGrader
 import random
 
 
@@ -15,7 +15,7 @@ class RockstarGA:
 
         # external calls setup
         self.rsg = RuleSet.RuleSetGenerator(self.childrenLength)
-        self.dsc = DissonanceCalculator.DissonanceCalculation()
+        self.dsc = TuneGrader.TuneGrader()
 
         #datastructures
         self.allGenerations = [[[]]]
