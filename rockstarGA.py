@@ -1,5 +1,5 @@
 import RuleSet
-import DissonanceCalculator
+import TuneGrader
 import random
 
 
@@ -15,33 +15,32 @@ class RockstarGA:
 
         # external calls setup
         self.rsg = RuleSet.RuleSetGenerator(self.childrenLength)
-        self.dsc = DissonanceCalculator.DissonanceCalculation()
+        self.dsc = TuneGrader.TuneGrader()
 
         #datastructures
-        self.allGenerations = [[[]]]
-
+        self.allGenerations = []
 
 
     def generateStartingChildren(self):
         # randomly generates a random set of starting seeds of size equal to childrenLength
-        nextGeneration = [[]]
+        nextGeneration = []
         newChild = []
         for x in range(self.children):
             for y in range(self.childrenLength):
                 newChild.append(random.choice(range(2)))
-            nextGeneration.append(newChild)
+            nextGeneration.append(newChild.copy())
             # print(newChild)
             newChild.clear()
+        # print(nextGeneration)
         self.allGenerations.append(nextGeneration)
 
     def generateCompleteTune(self, child):
         # uses the attatched ruleset to calculate the automata's generation on a give string
-        childsTune = [[]]
-        childsTune.append(child)
+        childsTune = [[], child]
         for x in range(self.tuneLength-1):
             nextString = self.rsg.step(child)
             childsTune.append(nextString)
-        print(childsTune)
+        # print(childsTune)
         return childsTune
 
     def determineChildDissonance(self, child):
@@ -51,6 +50,8 @@ class RockstarGA:
     def start(self):
         # begins the GA generation
         self.generateStartingChildren()
+        print(self.allGenerations)
+        # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
 def RunGA(children=20, totalGenerations=50, childrenLength =75, tuneLength=50):
