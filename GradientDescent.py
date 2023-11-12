@@ -2,7 +2,7 @@
 # and from the code written by Issaka Van't Hul, Ana Espeleta, and Christian Lentz for that HW assignment
 
 import RuleSet
-import DissonanceCalculator
+import TuneGrader
 import random
 
 # verbose = True
@@ -22,7 +22,7 @@ class HillClimber(object):
         
         
         self.ruleSetGenerator = RuleSet.RuleSetGenerator(self.childrenLength)
-        self.dissonanceCalculator = DissonanceCalculator.DissonanceCalculation()
+        self.dissonanceCalculator = TuneGrader.DissonanceCalculation()
 
         self.bestSoFarSeed = startSeed
         self.count = 0
