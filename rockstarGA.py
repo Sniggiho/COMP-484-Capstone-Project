@@ -12,6 +12,7 @@ class RockstarGA:
         self.totalGenerations = totalGenerations
         self.childrenLength = childrenLength
         self.tuneLength = tuneLength
+        self.currentGeneration = 0
 
         # external calls setup
         self.rsg = RuleSet.RuleSetGenerator(self.childrenLength)
@@ -46,6 +47,29 @@ class RockstarGA:
     def determineChildDissonance(self, child):
         # determines the dissonance of a given child by generation its tune, then running it through dsc
         return self.dsc.determineTotalDissonance(self.generateCompleteTune(child))
+
+    def generateRoulette(self, generation):
+        # given a generation of children, calculates their dissonance and forms a roulette based set to breed
+        breedingSet = []
+        workSet = []
+
+        for i in range(len(generation)):
+            workSet.append(self.determineChildDissonance(generation[i]))
+        while len(breedingSet) < self.children:
+
+
+        return breedingSet
+
+    def generateNewChildren(self, breedingSet):
+        # given a breeding set, generate a new generation of children.
+        nextGeneration = []
+
+        return nextGeneration
+
+    def runGeneration(self):
+        while(self.currentGeneration < self.totalGenerations):
+            breedingSet = self.generateRoulette(self.allGenerations[self.currentGeneration])
+            nextGeneration = self.generateNewChildren(breedingSet)
 
     def start(self):
         # begins the GA generation
