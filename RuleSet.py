@@ -10,7 +10,7 @@ class RuleSetGenerator:
         cpyCurrString = list(currentString)
         # print(newString)
         length = len(currentString)
-        print(length)
+        # print(length)
         cpyCurrString.append(currentString[0])
 
         for x in range(length):

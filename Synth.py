@@ -30,8 +30,8 @@ class Synth:
                 self.allNoteNames.append(line.strip())
         
 
-        print(self.allNoteNames)
-        print(self.allNoteFreqs)
+        # print(self.allNoteNames)
+        # print(self.allNoteFreqs)
         self.audioServer.boot()
 
     def interpretData1(self, automataData, scale):
@@ -53,7 +53,6 @@ class Synth:
         """
         dataWidth = len(automataData[0])
         scaleWidth = len(scale)
-
         assert(dataWidth >= scaleWidth), "Scale too large for data; please try again with smaller scale size"
         assert(dataWidth % scaleWidth == 0), "dataWidth must be evenly divisible by scaleWidth"
 

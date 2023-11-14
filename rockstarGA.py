@@ -43,16 +43,20 @@ class RockstarGA:
             nextString = self.rsg.step(child)
             childsTune.append(nextString)
         # print(childsTune)
-        return childsTune
+        return childsTune[1:]
 
     def determineChildDissonance(self, child):
         # determines the dissonance of a given child by generation its tune, then running it through dsc
         childsTune = self.generateCompleteTune(child)
 
+        print(len(childsTune[0]))
+
         scaleSteps = self.synth.majorPent
         numOcts = 5  # hardcoded for now
         scale = self.synth.getScale("A1", numOcts, scaleSteps)
+
         childsNotes = self.synth.interpretData1(childsTune, scale)
+
         return self.dsc.determineTotalDissonance(childsNotes)
 
     def generateRoulette(self, generation):
@@ -114,7 +118,7 @@ class RockstarGA:
         for i in range(len(generation)):
             childDissonance = self.determineChildDissonance(generation[i])
             totalGenerationDissonance += childDissonance
-            if childDissonance <= bestChildDissonance
+            if childDissonance <= bestChildDissonance:
                 bestChildDissonance = childDissonance
         print("Best Child Dissonance:"+ str(bestChildDissonance))
         print("Generation's total Dissonance:"+ str(totalGenerationDissonance))

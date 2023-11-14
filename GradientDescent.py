@@ -4,6 +4,7 @@
 import RuleSet
 import TuneGrader
 import random
+from Synth import Synth
 
 # verbose = True
 
@@ -19,6 +20,7 @@ class HillClimber(object):
         self.currSeed = startSeed
         self.tuneLength = tuneLength
         self.stringLength = stringLength
+        self.synth = Synth()
         
         
         self.ruleSetGenerator = RuleSet.RuleSetGenerator(self.childrenLength)
@@ -41,7 +43,15 @@ class HillClimber(object):
 
     def determineChildDissonance(self, child):
         # determines the dissonance of a given child by generation its tune, then running it through dsc
-        return self.dissonanceCalculator.determineTotalDissonance(self.generateCompleteTune(child))
+        # return self.dissonanceCalculator.determineTotalDissonance(self.generateCompleteTune(child))
+        childsTune = self.generateCompleteTune(child)
+
+        scaleSteps = self.synth.majorPent
+        numOcts = 5  # hardcoded for now
+        scale = self.synth.getScale("A1", numOcts, scaleSteps)
+        childsNotes = self.synth.interpretData1(childsTune, scale)
+        return self.dissonanceCalculator.determineTotalDissonance(childsNotes)
+
 
 
     def getCount(self):
