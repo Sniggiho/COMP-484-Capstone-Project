@@ -38,12 +38,18 @@ class RockstarGA:
 
     def generateCompleteTune(self, child):
         # uses the attatched ruleset to calculate the automata's generation on a give string
-        childsTune = [[], child]
-        for x in range(self.tuneLength - 1):
-            nextString = self.rsg.step(child)
-            childsTune.append(nextString)
-        # print(childsTune)
-        return childsTune[1:]
+        # childsTune = [[], child]
+        # for x in range(self.tuneLength - 1):
+        #     nextString = self.rsg.step(child)
+        #     childsTune.append(nextString)
+        # # print(childsTune)
+        # return childsTune[1:]
+        tune  = []
+        tune.append(child)
+        for i in range(self.tuneLength-1):
+            nextChord = self.rsg.step(tune[i])
+            tune.append(nextChord)
+        return tune
 
     def determineChildDissonance(self, child):
         # determines the dissonance of a given child by generation its tune, then running it through dsc
@@ -162,7 +168,7 @@ class RockstarGA:
         for i in generation[leastDissonantChild]:
             print(generation[leastDissonantChild][i], end="")
 
-        print("Second Best Child:")
+        print("\nSecond Best Child:")
         for i in generation[secondLeastDissonantChild]:
             print(generation[secondLeastDissonantChild][i], end="")
 

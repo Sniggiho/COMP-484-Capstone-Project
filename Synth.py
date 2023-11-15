@@ -1,4 +1,5 @@
 from pyo import*
+from pypiano import *
 
 class Synth:
 
@@ -104,6 +105,9 @@ class Synth:
         if noteFreqs: #if the list isn't empty
             chord = SuperSaw(noteFreqs).out()
         time.sleep(duration)
+
+    def playNotesWithPiano(noteFreqs,duration):
+        pass
 
     def getScale(self, lowestTonic, numOctaves, scaleSteps):
         """ 

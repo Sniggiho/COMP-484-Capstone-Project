@@ -30,7 +30,12 @@ class TuneGrader:
         """
         editedChord = []
         for note in chord: # remove octave numbering
-            editedChord.append(note[:-1])
+            if "/" in note:
+                editedChord.append(note[:2]+note[3:-1])
+            else:
+                editedChord.append(note[:-1])
+            
+
 
         lowestDissonance = 1000000 # far higher than we'll ever achieve
 
@@ -40,7 +45,8 @@ class TuneGrader:
                 if not note in triad:
                     dissonanceScore +=1
             if dissonanceScore < lowestDissonance:
-                lowestDissonance = dissonanceScore        
+                lowestDissonance = dissonanceScore 
+                # print("most likely triad is:",triad, "With dissonance:" , lowestDissonance)       
 
         return lowestDissonance
 
@@ -62,3 +68,6 @@ class TuneGrader:
         for chord in tune:
             totalDissonance += self.determineDissonance(chord)
         return totalDissonance
+
+tg = TuneGrader()
+print(tg.determineDissonance(['C#1/Db1', 'F#1/Gb1', 'B1', 'C#2/Db2', 'F#2/Gb2', 'G#2/Ab2', 'B3', 'C#4/Db4', 'F#4/Gb4', 'G#4/Ab4', 'B4', 'G#5/Ab5']))
