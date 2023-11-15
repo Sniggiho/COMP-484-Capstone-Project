@@ -1,5 +1,5 @@
 from pyo import*
-from pypiano import *
+# from pypiano import *
 
 class Synth:
 

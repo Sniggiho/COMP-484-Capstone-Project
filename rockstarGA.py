@@ -2,7 +2,7 @@ import RuleSet
 import TuneGrader
 import random
 from Synth import Synth
-
+from matplotlib import pyplot as plt
 
 class RockstarGA:
     # run the Genetic Algorithm with set specifications
@@ -14,6 +14,9 @@ class RockstarGA:
         self.childrenLength = childrenLength
         self.tuneLength = tuneLength
         self.currentGeneration = 0
+
+        self.allBestDissonances =[]
+        self.allTotalDissonances= []
 
         # external calls setup
         self.rsg = RuleSet.RuleSetGenerator(self.childrenLength)
@@ -140,12 +143,14 @@ class RockstarGA:
         totalGenerationDissonance = 0
         for i in range(len(generation)):
             childDissonance = self.determineChildDissonance(generation[i])
-            print(childDissonance)
+            # print(childDissonance)
             totalGenerationDissonance += childDissonance
             if childDissonance <= bestChildDissonance:
                 bestChildDissonance = childDissonance
         print("Best Child Dissonance:"+ str(bestChildDissonance))
+        self.allBestDissonances.append(bestChildDissonance)
         print("Generation's total Dissonance:"+ str(totalGenerationDissonance))
+        self.allTotalDissonances.append(totalGenerationDissonance)
 
     def conclusion(self):
         generation = self.allGenerations[self.currentGeneration]
@@ -166,11 +171,15 @@ class RockstarGA:
         
         print("Best Child:")
         for i in generation[leastDissonantChild]:
-            print(generation[leastDissonantChild][i], end="")
+            print(i, end="")
 
         print("\nSecond Best Child:")
         for i in generation[secondLeastDissonantChild]:
-            print(generation[secondLeastDissonantChild][i], end="")
+            print(i, end="")
+
+        plt.plot(self.allBestDissonances)
+        plt.plot(self.allTotalDissonances)
+        plt.show()
 
             
 
@@ -192,7 +201,7 @@ class RockstarGA:
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
-def RunGA(children=20, totalGenerations=50, childrenLength=75, tuneLength=50):
+def RunGA(children=20, totalGenerations=500, childrenLength=75, tuneLength=50):
     ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength)
     ga.start()
 
