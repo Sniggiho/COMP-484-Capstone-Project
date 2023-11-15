@@ -49,7 +49,7 @@ class RockstarGA:
         # determines the dissonance of a given child by generation its tune, then running it through dsc
         childsTune = self.generateCompleteTune(child)
 
-        print(len(childsTune[0]))
+        # print(child)
 
         scaleSteps = self.synth.majorPent
         numOcts = 5  # hardcoded for now
@@ -65,26 +65,39 @@ class RockstarGA:
         workSet = []
 
         mostDissonance = 0
-        mostDissonantChild = 0
+
+        leastDissonance = 1000
+        secondLeastDissonance = 1000
+        leastDissonantChild = 0
+        secondLeastDissonantChild = 0
+        
 
         for i in range(len(generation)):
             workSet.append(self.determineChildDissonance(generation[i]))
             if(self.determineChildDissonance(generation[i]) > mostDissonance):
                 mostDissonance = self.determineChildDissonance(generation[i])
-                mostDissonantChild = i
+            if(self.determineChildDissonance(generation[i]) < leastDissonance):
+                leastDissonance = self.determineChildDissonance(generation[i])
+                leastDissonantChild = i
+            elif(self.determineChildDissonance(generation[i]) < secondLeastDissonance):
+                secondLeastDissonance = self.determineChildDissonance(generation[i])
+                secondLeastDissonantChild = i
 
         for i in range(len(generation)):
-            workSet[i] = workSet[mostDissonantChild] - workSet[i]
+            workSet[i] = mostDissonance - workSet[i]
 
         totalDissonance = sum(workSet)
-        print("Total Dissonance for generation " + str(self.currentGeneration)+" is " + str(totalDissonance))
-        while len(breedingSet) < self.children:
+
+        while len(breedingSet) < self.children - 2:
             randomInt = random.randint(0, totalDissonance)
             i = 0
             while randomInt > 0:
                 randomInt -= workSet[i]
                 i += 1
             breedingSet.append(generation[i - 1])
+        
+        breedingSet.append(generation[leastDissonantChild])
+        breedingSet.append(generation[secondLeastDissonantChild])
         return breedingSet
 
     def generateNewChildren(self, breedingSet):
@@ -92,15 +105,19 @@ class RockstarGA:
         nextGeneration = []
         i = 0
         halfway = int(len(breedingSet[0]) / 2)
-        while len(nextGeneration) != len(breedingSet):
-            newString1 = breedingSet[i][0: halfway - 1] + breedingSet[i + 1][halfway: len(breedingSet[0] - 1)]
-            newString2 = breedingSet[i + 1][0: halfway - 1] + breedingSet[i][halfway: len(breedingSet[0] - 1)]
+        while len(nextGeneration) != len(breedingSet)-2:
+            newString1 = breedingSet[i][: halfway] + breedingSet[i + 1][halfway:]
+            newString2 = breedingSet[i + 1][: halfway] + breedingSet[i][halfway:]
             newString1 = self.mutate(newString1)
             newString2 = self.mutate(newString2)
             nextGeneration.append(newString1)
             nextGeneration.append(newString2)
-            if len(nextGeneration) == len(breedingSet) - 1:
-                nextGeneration.append(breedingSet[random.randint(0, len(breedingSet) - 1)])
+            i+=2
+        
+
+        nextGeneration.append(breedingSet[len(breedingSet)-1])
+        nextGeneration.append(breedingSet[len(breedingSet)-2])
+
         return nextGeneration
 
     def mutate(self, child):
@@ -117,11 +134,39 @@ class RockstarGA:
         totalGenerationDissonance = 0
         for i in range(len(generation)):
             childDissonance = self.determineChildDissonance(generation[i])
+            print(childDissonance)
             totalGenerationDissonance += childDissonance
             if childDissonance <= bestChildDissonance:
                 bestChildDissonance = childDissonance
         print("Best Child Dissonance:"+ str(bestChildDissonance))
         print("Generation's total Dissonance:"+ str(totalGenerationDissonance))
+
+    def conclusion(self):
+        generation = self.allGenerations[self.currentGeneration]
+        
+        leastDissonance = 1000
+        secondLeastDissonance = 1000
+        leastDissonantChild = 0
+        secondLeastDissonantChild = 0
+        
+
+        for i in range(len(generation)):
+            if(self.determineChildDissonance(generation[i]) < leastDissonance):
+                leastDissonance = self.determineChildDissonance(generation[i])
+                leastDissonantChild = i
+            elif(self.determineChildDissonance(generation[i]) < secondLeastDissonance):
+                secondLeastDissonance = self.determineChildDissonance(generation[i])
+                secondLeastDissonantChild = i
+        
+        print("Best Child:")
+        for i in generation[leastDissonantChild]:
+            print(generation[leastDissonantChild][i], end="")
+
+        print("Second Best Child:")
+        for i in generation[secondLeastDissonantChild]:
+            print(generation[secondLeastDissonantChild][i], end="")
+
+            
 
     def runGenerations(self):
         while self.currentGeneration < self.totalGenerations:
@@ -129,13 +174,15 @@ class RockstarGA:
             self.allGenerations.append(self.generateNewChildren(breedingSet))
             print("Generation " + str(self.currentGeneration) + " done!")
             self.currentGeneration += 1
-            # self.calculateDissapointment((self.allGenerations[self.currentGeneration]))
+            self.calculateDissapointment((self.allGenerations[self.currentGeneration]))
+        self.conclusion()
+        
 
     def start(self):
         # begins the GA generation
         self.generateStartingChildren()
         self.runGenerations()
-        print(self.allGenerations)
+        # print(self.allGenerations)
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
