@@ -5,6 +5,7 @@ import RuleSet
 import TuneGrader
 import random
 from Synth import Synth
+from matplotlib import pyplot as plt
 
 # verbose = True
 
@@ -21,6 +22,8 @@ class HillClimber(object):
         self.tuneLength = tuneLength
         self.synth = Synth()
         
+        self.localMinima = []
+        self.allDissonanceVals = []
         
         self.ruleSetGenerator = RuleSet.RuleSetGenerator(len(startSeed))
         self.dissonanceCalculator = TuneGrader.TuneGrader()
@@ -83,6 +86,7 @@ class HillClimber(object):
 
         while self.getCurrValue() > self.minValue and self.count < self.maxRounds:
             self.currSeed = self.step() # used to be status instead of self.currSeed
+            self.allDissonanceVals.append(self.determineSeedDissonance(self.currSeed))
 
         
         return self.getCurrValue(), self.count
@@ -95,6 +99,10 @@ class HillClimber(object):
         # use this for hill climbing
         result = self.getBestAllNeighs()
         
+        if result == self.currSeed:
+            print("Doing random restart")
+            self.localMinima.append(self.currSeed)
+            result = generateRandomSeed(len(self.currSeed))
         
         return result
 
@@ -132,11 +140,14 @@ class HillClimber(object):
         bestNeigh = self.findBestNeighbor(neighbors)
         
         if bestNeigh == self.currSeed:
-            print("local maximum reached with dissonance:", self.determineSeedDissonance(bestNeigh))
-            print(bestNeigh)
+            print("local minimum reached with dissonance:", self.determineSeedDissonance(bestNeigh), "Round:", self.count)
+            print("The local minimum is:", end="")
+            for i in self.currSeed:
+                print(i,end="")
+            print()
             return bestNeigh
         else:
-            print("better neighbor found")
+            print("better neighbor found; round:", self.count)
             return bestNeigh
     
     def findBestNeighbor(self, neighbors):
@@ -153,14 +164,35 @@ class HillClimber(object):
                 bestDissonance = dissonance
         
         return bestNeigh
+    
+    def generateStatistics(self):
+        print("----------------------------- Results -----------------------------------")
+        print("Number of rounds completed:", self.count)
+        print("Number of local minimum discovered:", len(self.localMinima))
+        localMinDissonanceVals = []
+        for minimum in self.localMinima:
+            localMinDissonanceVals.append(self.determineSeedDissonance(minimum))
+        
+        globalMinIdx = localMinDissonanceVals.index(min(localMinDissonanceVals))
+        print("Lowest overall dissonance value:", localMinDissonanceVals[globalMinIdx])
+        print("Lowest dissonance seed: ", end="")
+        for i in self.localMinima[globalMinIdx]:
+            print(i,end="")
+        print()
 
-def main():
-    startSeed = []
-    for i in range(0,75):
-        startSeed.append(random.randint(0,1))
-    
-    hillClimber = HillClimber(startSeed, 50, maxRounds = 15)
-    hillClimber.run()
-    
+        plt.plot(self.allDissonanceVals)
+        plt.show()
+
+
+def generateRandomSeed(length):
+    seed = []
+    for i in range(0,length):
+        seed.append(random.randint(0,1))
+    return seed
+
 if __name__ == "__main__":
-    main()
+    startSeed = generateRandomSeed(75)
+    
+    hillClimber = HillClimber(startSeed, 50, maxRounds = 500)
+    hillClimber.run()
+    hillClimber.generateStatistics()
