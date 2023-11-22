@@ -97,7 +97,7 @@ class HillClimber(object):
         self.count += 1
 
         # use this for hill climbing
-        result = self.getBestAllNeighs()
+        result = self.getBestAllNeighsBigSteps()
         
         if result == self.currSeed:
             print("Doing random restart")
@@ -116,26 +116,31 @@ class HillClimber(object):
             else:
                 neighbor[i]=1
             neighbors.append(neighbor)
-        #i=0
-        # for char in self.currSeed:
-        #     if i == 0:
-        #         if char == "1":
-        #             newSeed = "0" + self.currSeed[1:]
-        #         else:
-        #             newSeed = "1" + self.currSeed[1:]
-                    
-        #     elif i == len(self.currSeed) - 1:
-        #         if char == "1":
-        #             newSeed = self.currSeed[0:i] + "0"
-        #         else:
-        #             newSeed = self.currSeed[0:i] + "1"
-        #     else:
-        #         if char == "1":
-        #             newSeed = self.currSeed[0:i] + "0" + self.currSeed[i+1:]
-        #         else:
-        #             newSeed = self.currSeed[0:i] + "1" + self.currSeed[i+1:]    
-        #     neighbors.append(newSeed)
-        #     i+=1
+        
+        bestNeigh = self.findBestNeighborNonStop(neighbors)
+        
+        if bestNeigh == self.currSeed:
+            print("local minimum reached with dissonance:", self.determineSeedDissonance(bestNeigh), "Round:", self.count)
+            print("The local minimum is:", end="")
+            for i in self.currSeed:
+                print(i,end="")
+            print()
+            return bestNeigh
+        else:
+            print("better neighbor found; round:", self.count)
+            return bestNeigh
+
+    def getBestAllNeighsBigSteps(self):
+        """Looks at all neighbors, and returns the best (or the original state if all neighbors have a worse dissonance)"""
+        neighbors = []
+        for i in range(0,len(self.currSeed),3):
+            neighbor = list(self.currSeed)
+            for j in range(0,3):
+                if neighbor[i+j]:
+                    neighbor[i+j]=0
+                else:
+                    neighbor[i+j]=1
+            neighbors.append(neighbor)
         
         bestNeigh = self.findBestNeighbor(neighbors)
         
@@ -164,6 +169,36 @@ class HillClimber(object):
                 bestDissonance = dissonance
         
         return bestNeigh
+
+    def findBestNeighborStochastic(self, neighbors):
+        """Given a list of neighbors and values, find and return a neighbor with
+        the best value. If there are multiple neighbors with the same best value,
+        the first one found is chosen. If the best value is equal to the current value,
+        a neighbor is selected half the time (allowing the search to continue) and the
+        original string is selected half the time (triggering a random restart)"""
+        bestNeigh = self.currSeed
+        bestDissonance = self.determineSeedDissonance(self.currSeed)
+        
+        for neigh in neighbors:
+            dissonance = self.determineSeedDissonance(neigh)
+            if dissonance < bestDissonance:
+                bestNeigh = neigh
+                bestDissonance = dissonance
+            elif dissonance == bestDissonance and random.random() > 0.5:
+                bestNeigh = neigh
+                print("lateral move selected")
+        return bestNeigh
+
+    def findBestNeighborNonStop(self, neighbors):
+        """Given a list of neighbors, returns the neighbor with the lowest dissonance"""
+        # THIS DOESN'T WORK BECAUSE IT JUST BOUNCES BACK AND FORTH
+        dissonances = []
+        for neigh in neighbors:
+            dissonances.append(self.determineSeedDissonance(neigh))
+        
+        bestIdx = dissonances.index(min(dissonances))
+        print(dissonances[bestIdx])
+        return neighbors[bestIdx]
     
     def generateStatistics(self):
         print("----------------------------- Results -----------------------------------")
