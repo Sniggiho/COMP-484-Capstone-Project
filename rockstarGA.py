@@ -179,9 +179,12 @@ class RockstarGA:
         for i in generation[secondLeastDissonantChild]:
             print(i, end="")
 
+
         plt.plot(self.allBestDissonances)
         plt.plot(self.allAvgDissonances)
         plt.show()
+
+        return leastDissonance, secondLeastDissonance, generation[leastDissonantChild], generation[secondLeastDissonantChild]
 
             
 
@@ -192,13 +195,15 @@ class RockstarGA:
             print("Generation " + str(self.currentGeneration) + " done!")
             self.currentGeneration += 1
             self.calculateDissapointment((self.allGenerations[self.currentGeneration]))
-        self.conclusion()
+        leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = self.conclusion()
+        return leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild
         
 
     def start(self):
         # begins the GA generation
         self.generateStartingChildren()
-        self.runGenerations()
+        leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = self.runGenerations()
+        return leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild
         # print(self.allGenerations)
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
@@ -207,7 +212,7 @@ def RunGA(children=20, totalGenerations=250, childrenLength=75, tuneLength=50, r
     if ruleSet is None:
         ruleSet = [0, 1, 1, 1, 0, 0, 0, 1]
     ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength, ruleSet)
-    ga.start()
+    leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = ga.start()
 
 
 if __name__ == "__main__":
