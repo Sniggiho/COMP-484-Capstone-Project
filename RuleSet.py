@@ -99,4 +99,4 @@ class RuleSetGenerator:
                     newString[x] = 0
                 else:
                     newString[x] = 1
-            return newString
+        return newString

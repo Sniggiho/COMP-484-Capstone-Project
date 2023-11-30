@@ -15,7 +15,7 @@ class RockstarGA:
         self.tuneLength = tuneLength
         self.currentGeneration = 0
         self.ruleSet = ruleSet
-
+        print("Ruleset is: ", self.ruleSet)
         self.allBestDissonances =[]
         self.allAvgDissonances= []
 
@@ -203,7 +203,7 @@ class RockstarGA:
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
-def RunGA(children=40, totalGenerations=25, childrenLength=75, tuneLength=50, ruleSet=None):
+def RunGA(children=20, totalGenerations=250, childrenLength=75, tuneLength=50, ruleSet=None):
     if ruleSet is None:
         ruleSet = [0, 1, 1, 1, 0, 0, 0, 1]
     ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength, ruleSet)
@@ -211,4 +211,4 @@ def RunGA(children=40, totalGenerations=25, childrenLength=75, tuneLength=50, ru
 
 
 if __name__ == "__main__":
-    RunGA()
+    RunGA(children=40, totalGenerations=250, childrenLength=75, tuneLength=50, ruleSet=None)
