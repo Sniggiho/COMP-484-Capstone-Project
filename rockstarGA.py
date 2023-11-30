@@ -7,13 +7,14 @@ from matplotlib import pyplot as plt
 class RockstarGA:
     # run the Genetic Algorithm with set specifications
 
-    def __init__(self, children, totalGenerations, childrenLength, tuneLength):
+    def __init__(self, children, totalGenerations, childrenLength, tuneLength, ruleSet):
         # initialization variables
         self.children = children
         self.totalGenerations = totalGenerations
         self.childrenLength = childrenLength
         self.tuneLength = tuneLength
         self.currentGeneration = 0
+        self.ruleSet = ruleSet
 
         self.allBestDissonances =[]
         self.allAvgDissonances= []
@@ -50,7 +51,8 @@ class RockstarGA:
         tune  = []
         tune.append(child)
         for i in range(self.tuneLength-1):
-            nextChord = self.rsg.step(tune[i])
+            # nextChord = self.rsg.step(tune[i])
+            nextChord = self.rsg.stepSpecific(tune[i],self.ruleSet)
             tune.append(nextChord)
         return tune
 
@@ -201,8 +203,10 @@ class RockstarGA:
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
-def RunGA(children=40, totalGenerations=750, childrenLength=75, tuneLength=50):
-    ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength)
+def RunGA(children=40, totalGenerations=25, childrenLength=75, tuneLength=50, ruleSet=None):
+    if ruleSet is None:
+        ruleSet = [0, 1, 1, 1, 0, 0, 0, 1]
+    ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength, ruleSet)
     ga.start()
 
 
