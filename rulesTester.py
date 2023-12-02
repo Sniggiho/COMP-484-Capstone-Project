@@ -47,7 +47,22 @@ class RuleTester:
             print("Second Least Dissonant: ",secondLeastDissonantChild)
             print("Dissonance: ",secondLeastDissonance)
 
-def runTester(children=20, totalGenerations=20, childrenLength=75, tuneLength=50):
+            converted_list = map(str, ruleSet)
+            resultRuleSet = ''.join(converted_list)
+            converted_list = map(str, leastDissonantChild)
+            resultLeastDissonantChild = ''.join(converted_list)
+            converted_list = map(str, secondLeastDissonantChild)
+            resultSecondLeastDissonantChild = ''.join(converted_list)
+
+            f = open("testfile.txt", "a")
+            f.write("\nRuleSet: " + resultRuleSet)
+            f.write("\nLeast Dissonant: " + resultLeastDissonantChild)
+            f.write("\nDissonance: " + str(leastDissonance))
+            f.write("\nSecond Least Dissonant: " + resultSecondLeastDissonantChild)
+            f.write("\nDissonance: " + str(secondLeastDissonance))
+            f.close()
+
+def runTester(children=10, totalGenerations=10, childrenLength=75, tuneLength=50):
     rt = RuleTester(children, totalGenerations, childrenLength, tuneLength)
     rt.start()
 

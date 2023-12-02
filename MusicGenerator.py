@@ -54,19 +54,23 @@ class MusicGeneratorGUI:
         rowLabel = tk.Label(makerFrame, text="# of Rows")
         colLabel = tk.Label(makerFrame, text="# of Cols")
         seedLabel = tk.Label(makerFrame, text="input seed")
+        ruleLabel = tk.Label(makerFrame, text="input ruleset")
         self.userBPM = tk.StringVar()
         self.userKey = tk.StringVar()
         self.userRows = tk.StringVar()
         self.userCols = tk.StringVar()
         self.userSeed = tk.StringVar()
+        self.userRuleSet = tk.StringVar()
         self.userBPM.set(str(60))
         self.userRows.set(str(self.numRows))
         self.userCols.set(str(self.numCols))
         self.userSeed.set(str(0))
+        self.userRuleSet.set(str("01110001"))
         self.BPMEntry = tk.Entry(makerFrame, textvariable=self.userBPM, width=4, justify=tk.CENTER)
         self.rowsEntry = tk.Entry(makerFrame, textvariable=self.userRows, width=4, justify=tk.CENTER)
         self.colsEntry = tk.Entry(makerFrame, textvariable=self.userCols, width=4, justify=tk.CENTER)
         self.seedEntry = tk.Entry(makerFrame, textvariable=self.userSeed, width=16, justify=tk.CENTER)
+        self.ruleEntry = tk.Entry(makerFrame, textvariable=self.userRuleSet, width=8, justify=tk.CENTER)
 
         
 
@@ -76,10 +80,12 @@ class MusicGeneratorGUI:
         rowLabel.grid(row=1, column=3)
         colLabel.grid(row=2, column=3)
         seedLabel.grid(row=3, column=1)
+        ruleLabel.grid(row=4, column=1)
         self.BPMEntry.grid(row=2, column=1)
         self.rowsEntry.grid(row=1, column=4)
         self.colsEntry.grid(row=2, column=4)
         self.seedEntry.grid(row=3, column=2)
+        self.ruleEntry.grid(row=4, column=2)
 
         # Edit existing maze subframe
         editSubFrame = tk.Frame(editFrame, bd=2, relief=tk.GROOVE, padx=5, pady=5)
@@ -210,6 +216,18 @@ class MusicGeneratorGUI:
             currentSeed.append(0)
         return currentSeed
 
+    def getRules(self):
+        """Converts the current string ruleset into a list of ints and returns it"""
+        currentRules = []
+        print(self.userRuleSet.get())
+        for character in str(self.userRuleSet.get()):
+            currentRules.append(int(character))
+        while (len(currentRules) < self.numCols):
+            currentRules.append(0)
+        while (len(currentRules) > 8):
+            currentRules.pop(8)
+        return currentRules
+
     def updateGrid(self):
         count = 0
         for cell in self.allGenerations[self.stepsTaken]:
@@ -227,6 +245,7 @@ class MusicGeneratorGUI:
 
     def step(self):
         print("stepped")
+        ruleSet = self.getRules()
         if(self.stepsTaken < (int(self.numRows) -1)):
             if(self.stepsTaken == 0):
                 currentString = self.getSeed()
@@ -236,7 +255,7 @@ class MusicGeneratorGUI:
                 currentString = self.allGenerations[self.stepsTaken]
             print(currentString)
             self.stepsTaken+=1
-            self.allGenerations.append(self.rsg.step(currentString))
+            self.allGenerations.append(self.rsg.stepSpecific(currentString,ruleSet))
             print(self.allGenerations[self.stepsTaken])
             self.updateGrid()
 
