@@ -180,8 +180,11 @@ class RockstarGA:
             print(i, end="")
 
 
-        plt.plot(self.allBestDissonances)
-        plt.plot(self.allAvgDissonances)
+        plt.plot(self.allBestDissonances, label = "Best Dissonance")
+        plt.plot(self.allAvgDissonances, label = "Population Average Dissonance")
+        plt.legend()
+        plt.xlabel("Generation")
+        plt.ylabel("Dissonance Score")
         plt.show()
 
         return leastDissonance, secondLeastDissonance, generation[leastDissonantChild], generation[secondLeastDissonantChild]
@@ -216,4 +219,4 @@ def RunGA(children=20, totalGenerations=250, childrenLength=75, tuneLength=50, r
 
 
 if __name__ == "__main__":
-    RunGA(children=40, totalGenerations=250, childrenLength=75, tuneLength=50, ruleSet=None)
+    RunGA(children=10, totalGenerations=5, childrenLength=75, tuneLength=50, ruleSet=None)
