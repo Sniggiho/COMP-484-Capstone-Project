@@ -15,7 +15,7 @@ class RockstarGA:
         self.tuneLength = tuneLength
         self.currentGeneration = 0
         self.ruleSet = ruleSet
-        print("Ruleset is: ", self.ruleSet)
+        # print("Ruleset is: ", self.ruleSet)
         self.allBestDissonances =[]
         self.allAvgDissonances= []
 
@@ -149,9 +149,9 @@ class RockstarGA:
             totalGenerationDissonance += childDissonance
             if childDissonance <= bestChildDissonance:
                 bestChildDissonance = childDissonance
-        print("Best Child Dissonance:"+ str(bestChildDissonance))
+        # print("Best Child Dissonance:"+ str(bestChildDissonance))
         self.allBestDissonances.append(bestChildDissonance)
-        print("Generation's average dissonance:"+ str(totalGenerationDissonance/self.children))
+        # print("Generation's average dissonance:"+ str(totalGenerationDissonance/self.children))
         self.allAvgDissonances.append(totalGenerationDissonance/self.children)
 
     def conclusion(self):
@@ -185,7 +185,11 @@ class RockstarGA:
         plt.legend()
         plt.xlabel("Generation")
         plt.ylabel("Dissonance Score")
-        plt.show()
+        rulesetAsString = ""
+        for i in self.ruleSet:
+            rulesetAsString += str(i)
+        plt.savefig("rulesetPlots/" + rulesetAsString)
+        plt.close()
 
         return leastDissonance, secondLeastDissonance, generation[leastDissonantChild], generation[secondLeastDissonantChild]
 
@@ -195,7 +199,7 @@ class RockstarGA:
         while self.currentGeneration < self.totalGenerations:
             breedingSet = self.generateRoulette(self.allGenerations[self.currentGeneration])
             self.allGenerations.append(self.generateNewChildren(breedingSet))
-            print("Generation " + str(self.currentGeneration) + " done!")
+            # print("Generation " + str(self.currentGeneration) + " done!")
             self.currentGeneration += 1
             self.calculateDissapointment((self.allGenerations[self.currentGeneration]))
         leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = self.conclusion()
@@ -211,7 +215,7 @@ class RockstarGA:
         # print(self.determineChildDissonance(self.allGenerations[0][0]))
 
 
-def RunGA(children=20, totalGenerations=250, childrenLength=75, tuneLength=50, ruleSet=None):
+def RunGA(children=20, totalGenerations=5, childrenLength=75, tuneLength=50, ruleSet=None):
     if ruleSet is None:
         ruleSet = [0, 1, 1, 1, 0, 0, 0, 1]
     ga = RockstarGA(children, totalGenerations, childrenLength, tuneLength, ruleSet)
@@ -219,4 +223,4 @@ def RunGA(children=20, totalGenerations=250, childrenLength=75, tuneLength=50, r
 
 
 if __name__ == "__main__":
-    RunGA(children=10, totalGenerations=5, childrenLength=75, tuneLength=50, ruleSet=None)
+    RunGA(ruleSet=[1,0,1,0,1,0,1,0])

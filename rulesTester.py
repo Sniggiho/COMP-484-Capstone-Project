@@ -14,7 +14,7 @@ class RuleTester:
         self.tuneLength = tuneLength
 
         self.allRuleStrings = self.getAllRules()
-        print(self.allRuleStrings)
+        # print(self.allRuleStrings)
 
 
     def getAllRules(self):
@@ -42,10 +42,10 @@ class RuleTester:
             newGA = rockstarGA.RockstarGA(self.children, self.totalGenerations, self.childrenLength, self.tuneLength, ruleSet)
             leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = newGA.start()
             print("\nRuleSet: ",ruleSet)
-            print("Least Dissonant: ",leastDissonantChild)
-            print("Dissonance: ",leastDissonance)
-            print("Second Least Dissonant: ",secondLeastDissonantChild)
-            print("Dissonance: ",secondLeastDissonance)
+            # print("Least Dissonant: ",leastDissonantChild)
+            # print("Dissonance: ",leastDissonance)
+            # print("Second Least Dissonant: ",secondLeastDissonantChild)
+            # print("Dissonance: ",secondLeastDissonance)
 
             converted_list = map(str, ruleSet)
             resultRuleSet = ''.join(converted_list)
@@ -62,7 +62,7 @@ class RuleTester:
             f.write("\nDissonance: " + str(secondLeastDissonance))
             f.close()
 
-def runTester(children=10, totalGenerations=10, childrenLength=75, tuneLength=50):
+def runTester(children=40, totalGenerations=1000, childrenLength=75, tuneLength=50):
     rt = RuleTester(children, totalGenerations, childrenLength, tuneLength)
     rt.start()
 
