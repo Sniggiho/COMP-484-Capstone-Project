@@ -6,12 +6,13 @@ import itertools
 class RuleTester:
     # run the Genetic Algorithm with set specifications
 
-    def __init__(self, children, totalGenerations, childrenLength, tuneLength):
+    def __init__(self, children, totalGenerations, childrenLength, tuneLength, startPoint):
         # initialization variables
         self.children = children
         self.totalGenerations = totalGenerations
         self.childrenLength = childrenLength
         self.tuneLength = tuneLength
+        self.startPoint = startPoint
 
         self.allRuleStrings = self.getAllRules()
         # print(self.allRuleStrings)
@@ -35,7 +36,10 @@ class RuleTester:
             currentHalfway=currentHalfway/2
             currentCount=0
             currentSymbol=0
-        return allRuleStrings
+        index = allRuleStrings.index(self.startPoint)
+        newAllRuleStrings = allRuleStrings[index:]
+        
+        return newAllRuleStrings
 
     def start(self):
         for ruleSet in self.allRuleStrings:
@@ -62,8 +66,8 @@ class RuleTester:
             f.write("\nDissonance: " + str(secondLeastDissonance))
             f.close()
 
-def runTester(children=40, totalGenerations=1000, childrenLength=75, tuneLength=50):
-    rt = RuleTester(children, totalGenerations, childrenLength, tuneLength)
+def runTester(children=40, totalGenerations=1000, childrenLength=75, tuneLength=50, startPoint = [0,0,0,0,0,0,0,0]):
+    rt = RuleTester(children, totalGenerations, childrenLength, tuneLength, startPoint)
     rt.start()
 
 
