@@ -6,15 +6,16 @@ import itertools
 class RuleTester:
     # run the Genetic Algorithm with set specifications
 
-    def __init__(self, children, totalGenerations, childrenLength, tuneLength):
+    def __init__(self, children, totalGenerations, childrenLength, tuneLength, startPoint):
         # initialization variables
         self.children = children
         self.totalGenerations = totalGenerations
         self.childrenLength = childrenLength
         self.tuneLength = tuneLength
+        self.startPoint = startPoint
 
         self.allRuleStrings = self.getAllRules()
-        print(self.allRuleStrings)
+        # print(self.allRuleStrings)
 
 
     def getAllRules(self):
@@ -35,17 +36,20 @@ class RuleTester:
             currentHalfway=currentHalfway/2
             currentCount=0
             currentSymbol=0
-        return allRuleStrings
+        index = allRuleStrings.index(self.startPoint)
+        newAllRuleStrings = allRuleStrings[index:]
+        
+        return newAllRuleStrings
 
     def start(self):
         for ruleSet in self.allRuleStrings:
             newGA = rockstarGA.RockstarGA(self.children, self.totalGenerations, self.childrenLength, self.tuneLength, ruleSet)
             leastDissonance, secondLeastDissonance, leastDissonantChild, secondLeastDissonantChild = newGA.start()
             print("\nRuleSet: ",ruleSet)
-            print("Least Dissonant: ",leastDissonantChild)
-            print("Dissonance: ",leastDissonance)
-            print("Second Least Dissonant: ",secondLeastDissonantChild)
-            print("Dissonance: ",secondLeastDissonance)
+            # print("Least Dissonant: ",leastDissonantChild)
+            # print("Dissonance: ",leastDissonance)
+            # print("Second Least Dissonant: ",secondLeastDissonantChild)
+            # print("Dissonance: ",secondLeastDissonance)
 
             converted_list = map(str, ruleSet)
             resultRuleSet = ''.join(converted_list)
@@ -62,11 +66,11 @@ class RuleTester:
             f.write("\nDissonance: " + str(secondLeastDissonance))
             f.close()
 
-def runTester(children=10, totalGenerations=10, childrenLength=75, tuneLength=50):
-    rt = RuleTester(children, totalGenerations, childrenLength, tuneLength)
+def runTester(children=40, totalGenerations=1000, childrenLength=75, tuneLength=50, startPoint = [0,0,0,0,0,0,0,0]):
+    rt = RuleTester(children, totalGenerations, childrenLength, tuneLength, startPoint)
     rt.start()
 
 
 
 if __name__ == "__main__":
-    runTester()
+    runTester(startPoint=[0,1,1,1,0,0,0,0])
