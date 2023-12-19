@@ -73,4 +73,4 @@ def runTester(children=40, totalGenerations=1000, childrenLength=75, tuneLength=
 
 
 if __name__ == "__main__":
-    runTester()
+    runTester(startPoint=[0,1,1,1,0,0,0,0])
